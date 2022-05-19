@@ -2,8 +2,8 @@ import discord
 from discord.ext import commands
 
 from helpers import *
+from TOKEN import TOKEN
 
-TOKEN = "OTU5OTMyMTA4MjA4NTAwNzQ2.YkjEcQ.zQoPcgIxn57MoF4AMQouO9MAe-I"
 description = "ELENA"
 
 WELCOME_CHANNEL = 786107233586905128
