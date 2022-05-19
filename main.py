@@ -1,40 +1,24 @@
 import discord
+import asyncio
+import random
 from discord.ext import commands
 
 from helpers import *
-from TOKEN import TOKEN
 
-description = "ELENA"
+from const.TOKEN import TOKEN
+from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
 
 WELCOME_CHANNEL = 786107233586905128
+DEF_ROLE = "comrade"
+GULAF_ROLE = 'GULAG'
 
 MIN_PEOPLE_CHANNEL = 4
-
-WELCOME_MESSAGE = ("WELCOME TO ELENA COMRADES SERVER! \n"
-                    "1) Change your name to the irl one \n"
-                    "2) To set the class roles, you need to go to #schedules and drop ur schedule in text format. "
-                    "We are using bot to automate role assignment, so u need to follow guidelines: "
-                    "In #schedules send something like: '?classes XXXX1111 YYYY2222 ZZZZ3333' \n"
-                    "Important! No spaces between the class name and number!! MUST be 4 letters 4 digits!\n"
-                    "Example: ?classes MATH2100 ELEC2100 POLS3043 ENGR1000\n"
-                    "3) Admins are '@Elena Gubankova', ping if you need help\n"
-                    "4) ?????\n"
-                    "5) GLORY TO ELENA COMRADES!")
-
-CLASS_NAME_RULE = "Class names should jave 4 letters 4 digits with no space in between, ex: MATH2100."
-CLASS_END_MESSAGE = ("All set (hopefully)! Double check your assigned roles, if anything wrong - ping admins (@Elena Gubankova)."
-                        " Last, please assign your major. Currently only three options available"
-                        " Electrical Engineering, Computer Engineering, and all other majors"
-                        " To set major type: ?major XX, where XX is EE or CO or OM. Example: ?major EE ")
-MAJOR_END_MESSAGE = ("Congratulations, comrade! You finished registration process! Double check all classes and major assignments."
-                        " good luck and always praise Elena")
-
 
 intents = discord.Intents.all()
 intents.members = True
 #intents.message_content = True
 
-bot = commands.Bot(command_prefix='?', description=description, intents=intents)
+bot = commands.Bot(command_prefix='?', description="ELENA", intents=intents)
 
 @bot.event
 async def on_ready():
@@ -48,7 +32,7 @@ async def on_member_join(member):
 
 @bot.command()
 async def online(ctx):
-    await ctx.send("Prepare to fight for the cause of the Elena Comrades!")
+    await ctx.send(ONLINE_MESSAGE)
 
 @bot.command()
 async def allroles(ctx):
@@ -77,7 +61,7 @@ async def major(ctx, major: str):
 
 @bot.command()
 async def classes(ctx, *classes: str):
-    default_role = discord.utils.get(ctx.guild.roles, name='comrade')
+    default_role = discord.utils.get(ctx.guild.roles, name=DEF_ROLE)
     await ctx.author.add_roles(default_role)
 
     classes_assign = []
@@ -117,12 +101,31 @@ async def classes(ctx, *classes: str):
             else:
                 new_role = await ctx.guild.create_role(name = str(clas), permissions = default_role.permissions,
                                                     colour= default_role.colour, mentionable = True)
-                #new_role = discord.utils.get(ctx.guild.roles, name=str(clas))
                 await new_role.edit(position=default_role.position-1)
                 await ctx.author.add_roles(new_role)
 
         await ctx.send(CLASS_END_MESSAGE)
 
     print("done for {}".format(ctx.author.name))
+
+@bot.command()
+async def gulagsmn(ctx):
+    limit_to = "Tyrant"
+    flag = CheckPermissionRole(ctx, limit_to)
+
+    if flag:
+        gulag_guy = random.choice(ListRoleMembers(bot, DEF_ROLE))
+        gulag_length = random.randint(1, 48)
+
+        gulag_role = discord.utils.get(ctx.guild.roles, name= GULAF_ROLE)
+        await gulag_guy.add_roles(gulag_role)
+
+        await ctx.send(f"{gulag_guy.mention} sent to gulag for {gulag_length} hours")
+
+        await asyncio.sleep(gulag_length*60*60)
+        await ctx.send(f"{gulag_guy.mention} your gulag sentence ended. be luckier next time")
+        await gulag_guy.remove_roles(gulag_role)
+    else:
+        await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
 bot.run(TOKEN)

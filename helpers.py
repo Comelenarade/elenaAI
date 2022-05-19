@@ -48,3 +48,18 @@ def ClassFormat(class_input):
     class_numb = class_input[4:8]
     new_class_name = "{} {}".format(class_name.upper(), class_numb)
     return new_class_name
+
+def CheckPermissionRole(context, role_check):
+    for role in context.author.roles:
+        if role.name == role_check:
+            return True
+    return False
+
+def ListRoleMembers(bot, role_check):
+    list = []
+    for guild in bot.guilds:
+        for member in guild.members:
+            for rol in member.roles:
+                if rol.name == role_check:
+                    list.append(member)
+    return list

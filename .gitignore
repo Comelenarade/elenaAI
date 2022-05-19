@@ -1,2 +1,5 @@
 #Token file
 TOKEN.py
+
+#compiled
+__pycache__/
