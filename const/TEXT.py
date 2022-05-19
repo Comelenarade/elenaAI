@@ -16,6 +16,8 @@ CLASS_END_MESSAGE = ("All set (hopefully)! Double check your assigned roles, if 
                         " Electrical Engineering, Computer Engineering, and all other majors"
                         " To set major type: ?major XX, where XX is EE or CO or OM. Example: ?major EE ")
 
+CLASS_DUP_ERROR = "You listed this class twice. Will just ignore the duplicate and continue."
+
 MAJOR_END_MESSAGE = ("Congratulations, comrade! You finished registration process! Double check all classes and major assignments."
                         " good luck and always praise Elena")
 

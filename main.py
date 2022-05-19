@@ -6,7 +6,7 @@ from discord.ext import commands
 from helpers import *
 
 from const.TOKEN import TOKEN
-from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
+from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE, CLASS_DUP_ERROR
 
 WELCOME_CHANNEL = 786107233586905128
 DEF_ROLE = "comrade"
@@ -18,7 +18,7 @@ intents = discord.Intents.all()
 intents.members = True
 #intents.message_content = True
 
-bot = commands.Bot(command_prefix='?', description="ELENA", intents=intents)
+bot = commands.Bot(command_prefix='?', description="ELENA AI", intents=intents)
 
 @bot.event
 async def on_ready():
@@ -32,22 +32,26 @@ async def on_member_join(member):
 
 @bot.command()
 async def online(ctx):
+    """Sends a message to a chat."""
     await ctx.send(ONLINE_MESSAGE)
 
 @bot.command()
 async def allroles(ctx):
+    """Sends a list with all roles statistics"""
     messg = RolesCounterPrepToPrint(RolesCounterAll(ctx))
     for block in messg:
         await ctx.send(block)
 
 @bot.command()
 async def classroles(ctx):
+    """Sends a list with class roles statistics."""
     messg = RolesCounterPrepToPrint(RolesCounterClasses(ctx))
     for block in messg:
         await ctx.send(block)
 
 @bot.command()
 async def major(ctx, major: str):
+    """To assign a major. XX is EE for Electrical engr, CO for Computer engr, OM - for all other majors"""
     if major.upper() == "EE":
         mjr = "Electrical Engr"
     elif major.upper() == "CO" or major.upper() == "CE":
@@ -60,7 +64,8 @@ async def major(ctx, major: str):
 
 
 @bot.command()
-async def classes(ctx, *classes: str):
+async def classesx(ctx, *classes: str):
+    """To assign class roles. Classes MUST be 4 letters 4 digits no space! Example: ?classes MATH2100 ELEC2100 ENGR1000"""
     default_role = discord.utils.get(ctx.guild.roles, name=DEF_ROLE)
     await ctx.author.add_roles(default_role)
 
@@ -72,6 +77,8 @@ async def classes(ctx, *classes: str):
             await ctx.send("{} {} caused this error. No classes assigned/created.".format(CLASS_NAME_RULE, clas))
             flag_error = False
             break
+        elif ClassFormat(str(clas)) in classes_assign:
+            await ctx.send("{} caused this error. {}".format(clas, CLASS_DUP_ERROR))
         else:
             classes_assign.append(ClassFormat(str(clas)))
 
@@ -110,6 +117,7 @@ async def classes(ctx, *classes: str):
 
 @bot.command()
 async def gulagsmn(ctx):
+    """Sends random person to GULAG for 1-48 hours. Can only be used be Tyrant."""
     limit_to = "Tyrant"
     flag = CheckPermissionRole(ctx, limit_to)
 
