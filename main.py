@@ -64,7 +64,7 @@ async def major(ctx, major: str):
 
 
 @bot.command()
-async def classesx(ctx, *classes: str):
+async def classes(ctx, *classes: str):
     """To assign class roles. Classes MUST be 4 letters 4 digits no space! Example: ?classes MATH2100 ELEC2100 ENGR1000"""
     default_role = discord.utils.get(ctx.guild.roles, name=DEF_ROLE)
     await ctx.author.add_roles(default_role)
