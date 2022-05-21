@@ -1,4 +1,15 @@
-import re
+import re, os
+
+def parse_commandments(path, folder):
+    path_princ = os.path.join(path, folder)
+    all_tuple = ()
+    for file in os.listdir(path_princ):
+        with open(os.path.join(path_princ, file)) as f:
+            lines = f.readlines()
+            for line in lines:
+                new_tuple = (file.split(".")[0],line.strip())
+                all_tuple = (new_tuple, ) + all_tuple
+    return all_tuple
 
 def RolesCounterAll(context):
     all_roles = context.guild.roles
