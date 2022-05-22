@@ -118,7 +118,7 @@ async def classes(ctx, *classes: str):
     print("done for {}".format(ctx.author.name))
 
 @bot.command()
-async def gulagsmnx(ctx):
+async def gulagsmn(ctx):
     """Sends random person to GULAG for 1-48 hours. Can only be used be Tyrant."""
     limit_to = "Tyrant"
     flag = CheckPermissionRole(ctx, limit_to)
