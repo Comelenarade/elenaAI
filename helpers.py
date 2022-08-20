@@ -1,6 +1,6 @@
 import re, os
 
-def parse_commandments(path, folder):
+def parse_commandments(path, folder): #make tuple with all commandments
     path_princ = os.path.join(path, folder)
     all_tuple = ()
     for file in os.listdir(path_princ):
@@ -11,16 +11,22 @@ def parse_commandments(path, folder):
                 all_tuple = (new_tuple, ) + all_tuple
     return all_tuple
 
-def RolesCounterAll(context):
+def RolesCounterAllwZero(context): #make dictionary {with role_name : num_of_people_with_this_role} including roles with no members
     all_roles = context.guild.roles
     role_to_count = {}
     for role in all_roles:
-        num_ppl = len(role.members)
-        if num_ppl > 0 and str(role.name) != "@everyone":
-            role_to_count.update({role.name:num_ppl})
+        role_to_count.update({role.name:len(role.members)})
     return role_to_count
 
-def RolesCounterPrepToPrint(role_count_dict, block_size = 20):
+def RolesCounterAll(context): #make dictionary {with role_name : num_of_people_with_this_role}, only >0 people
+    all_roles = RolesCounterAllwZero(context)
+
+    for role in all_roles:
+        print(role)
+        print(all_roles.get(role))
+    return all_roles
+
+def RolesCounterPrepToPrint(role_count_dict, block_size = 20): #makes blocks of messages
     counter = 0
     message = ""
     message_blocks = [] #to avoid Discord char limit
@@ -36,8 +42,8 @@ def RolesCounterPrepToPrint(role_count_dict, block_size = 20):
         message_blocks.append(message)
     return message_blocks
 
-def RolesCounterClasses(context):
-    all_roles_counter = RolesCounterAll(context)
+def RolesCounterClasses(context): #stats for people taking classes
+    all_roles_counter = RolesCounterAll(context) #take in stats for all roles
     roles_pop = []
     r = re.compile('[A-Z]{4}\s[0-9]{4}')
     for role in all_roles_counter:
@@ -45,28 +51,28 @@ def RolesCounterClasses(context):
             roles_pop.append(role)
     for role in roles_pop:
         all_roles_counter.pop(role)
-    return dict(sorted(all_roles_counter.items(), key=lambda x: x[1]))
+    return dict(sorted(all_roles_counter.items(), key=lambda x: x[1])) #sort
 
-def ClassCheck(class_input):
+def ClassCheck(class_input): #Check if input (ex. MATH2100) class matches format
     r = re.compile('[A-zA-Z]{4}[0-9]{4}')
     if r.match(class_input) is not None:
         return True
     else:
         return False
 
-def ClassFormat(class_input):
+def ClassFormat(class_input): #convert input into class name (ex. MATH2100 into Math 2100)
     class_name = class_input[0:4]
     class_numb = class_input[4:8]
     new_class_name = "{} {}".format(class_name.upper(), class_numb)
     return new_class_name
 
-def CheckPermissionRole(context, role_check):
+def CheckPermissionRole(context, role_check): #checks if person has needed permission, role (string)
     for role in context.author.roles:
         if role.name == role_check:
             return True
     return False
 
-def ListRoleMembers(bot, role_check):
+def ListRoleMembers(bot, role_check): #return list of everyone with role, list of objects
     list = []
     for guild in bot.guilds:
         for member in guild.members:
