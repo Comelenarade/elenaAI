@@ -1,7 +1,8 @@
-import discord, asyncio, random, os
+import discord, asyncio, random, os, datetime
 from discord.ext import commands
 
 from helpers import *
+from loghelpers import *
 
 from const.TOKEN import TOKEN
 from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE, CLASS_DUP_ERROR
@@ -13,6 +14,7 @@ DEF_ROLE = "comrade"
 GULAG_ROLE = 'GULAG'
 TYRANT_ROLE  = "Tyrant"
 ADMINS_ROLE = "Elena Gubankova"
+ELENA_CHANNEL = "elena"
 
 MIN_PEOPLE_CHANNEL = 4
 
@@ -148,13 +150,89 @@ async def gulagsmn(ctx): #randomly gulag someone
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
-async def checkEmptyRoles(ctx): #service routine
+async def checkclasses(ctx): #service routine
     """Checks if any role classes with no members are there, because it can mess with Elena. Can only be used be Tyrant."""
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
-
     if flag:
-        pass
+        r = re.compile('[A-Z]{4}\s[0-9]{4}')
+        elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
+        all_roles = RolesCounterAllwZero(ctx)
+
+        for role in all_roles:
+            if (all_roles.get(role) == 0):
+                if r.match(role) is not None:
+                    await elenaChnl.send(f"FOUND EMPTY CLASS ROLE {role}. deleting it")
+                    empty_role = discord.utils.get(ctx.guild.roles, name= role)
+                    await empty_role.delete(reason="no members")
+        await elenaChnl.send("done with empty roles check")
+    else:
+        await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+
+@bot.command()
+async def logcomrades(ctx): #service routine
+    """Updates log json file with all comrades. Can only be used by Tyrant"""
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        allComrades = ListRoleMembers(bot, DEF_ROLE)
+        datetimenow = datetime.datetime.now().strftime("%Y_%m_%d_id%S")
+        with open(f"./logs/comarades_{datetimenow}.json", "w") as write_file:
+            data = {}
+            for _ in allComrades:
+                data[_.id] = {"name":_.name, "nick":_.nick, "discriminator":_.discriminator, "roles":[_a.name for _a in _.roles]}
+            json.dump(data, write_file)
+    else:
+        await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+
+@bot.command()
+async def reportcomrades(ctx): #service routine
+    """Prints latest log json file with all comrades. Can only be used by Tyrant"""
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        dir_list = os.listdir("./logs")
+        compare_time = 0
+        fileFound = ""
+
+        for _ in dir_list:
+            if _.startswith("comarades"):
+                fileCreaTime = os.path.getmtime(f"./logs/{_}")
+                if compare_time == 0:
+                    compare_time = fileCreaTime
+                    fileFound = _
+                else:
+                    if compare_time > fileCreaTime:
+                        compare_time = fileCreaTime
+                        fileFound = _
+        if fileFound != "":
+            with open(f"./logs/{fileFound}") as read_file:
+                dataComrades = json.load(read_file)
+
+            block_size = 5
+
+            counter = 0
+            message = ""
+            message_blocks = []
+            for _ in dataComrades:
+                message += (f"User ID {str(_)}:\n")
+                for _a in dataComrades[_]:
+                    if _a == "roles":
+                        dataComrades[_][_a] = [_aa for _aa in dataComrades[_][_a] if _aa != "@everyone"]
+                    message += (f"\t\t{_a}: {dataComrades[_][_a]}\n")
+                message += "\n "
+                counter += 1
+                if counter == block_size:
+                    message_blocks.append(message)
+                    counter = 0
+                    message = ""
+            if message != "":
+                message_blocks.append(message)
+            for block in message_blocks:
+                await ctx.send(block)
+
+        else:
+            await ctx.send("No logs for comrades were yet created")
     else:
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 

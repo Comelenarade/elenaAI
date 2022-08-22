@@ -21,10 +21,20 @@ def RolesCounterAllwZero(context): #make dictionary {with role_name : num_of_peo
 def RolesCounterAll(context): #make dictionary {with role_name : num_of_people_with_this_role}, only >0 people
     all_roles = RolesCounterAllwZero(context)
 
-    for role in all_roles:
-        print(role)
-        print(all_roles.get(role))
-    return all_roles
+    flagDeleteItem = 1 ##Deleting all roles with zero members
+    while (flagDeleteItem):
+        for role in all_roles:
+            if (all_roles.get(role) == 0):
+                flagDeleteItem = 0
+                break
+        if (not flagDeleteItem):
+            all_roles.pop(role)
+            flagDeleteItem = 1
+        else:
+            flagDeleteItem = 0
+
+    all_roles.update({"@ everyone":all_roles.pop("@everyone")}) #add everyone without tagging
+    return dict(reversed(list(all_roles.items())))
 
 def RolesCounterPrepToPrint(role_count_dict, block_size = 20): #makes blocks of messages
     counter = 0
