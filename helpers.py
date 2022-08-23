@@ -1,4 +1,6 @@
-import re, os
+import re, os, discord
+
+MAX_STRING_CHAR = 2000
 
 def parse_commandments(path, folder): #make tuple with all commandments
     path_princ = os.path.join(path, folder)
@@ -36,18 +38,25 @@ def RolesCounterAll(context): #make dictionary {with role_name : num_of_people_w
     all_roles.update({"@ everyone":all_roles.pop("@everyone")}) #add everyone without tagging
     return dict(reversed(list(all_roles.items())))
 
-def RolesCounterPrepToPrint(role_count_dict, block_size = 20): #makes blocks of messages
+def RolesCounterPrepToPrint(role_count_dict): #Creates messages to output number of people in each role
+    all_messages = []
+    for keey in role_count_dict:
+        tmp_mes = "{} - {} members \n".format(str(keey), str(role_count_dict[keey]))
+        all_messages.append(tmp_mes)
+    return MessagesToBlocks(all_messages)
+
+def MessagesToBlocks(list_of_messages): #makes blocks of messages
     counter = 0
     message = ""
     message_blocks = [] #to avoid Discord char limit
-    for keey in role_count_dict:
-        tmp_mes = "{} - {} members \n".format(str(keey), str(role_count_dict[keey]))
-        message += tmp_mes
-        counter += 1
-        if counter == block_size:
+    for _ in list_of_messages:
+        if (counter + len(_)) < MAX_STRING_CHAR:
+            message += _
+            counter = counter + len(_)
+        else:
             message_blocks.append(message)
-            counter = 0
-            message = ""
+            message = _
+            counter = len(_)
     if message != "":
         message_blocks.append(message)
     return message_blocks
@@ -82,11 +91,6 @@ def CheckPermissionRole(context, role_check): #checks if person has needed permi
             return True
     return False
 
-def ListRoleMembers(bot, role_check): #return list of everyone with role, list of objects
-    list = []
-    for guild in bot.guilds:
-        for member in guild.members:
-            for rol in member.roles:
-                if rol.name == role_check:
-                    list.append(member)
-    return list
+def ListRoleMembers(context, role_check): #return list of everyone with role, list of objects
+    role_add = discord.utils.get(context.guild.roles, name=role_check)
+    return role_add.members

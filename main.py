@@ -1,4 +1,4 @@
-import discord, asyncio, random, os, datetime
+import discord, asyncio, random, os
 from discord.ext import commands
 
 from helpers import *
@@ -30,6 +30,7 @@ async def on_ready():
     print('------')
     global COMMANDMENTS
     COMMANDMENTS = parse_commandments(os.getcwd(), "commandments")
+    checkLogPath()
 
 @bot.event
 async def on_member_join(member): #when new person joins, welcome them
@@ -133,7 +134,7 @@ async def gulagsmn(ctx): #randomly gulag someone
     flag = CheckPermissionRole(ctx, limit_to)
 
     if flag:
-        gulag_guy = random.choice(ListRoleMembers(bot, DEF_ROLE))
+        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
         gulag_length = random.randint(1, 48)
         gulag_reason = random.choice(COMMANDMENTS)
 
@@ -170,67 +171,27 @@ async def checkclasses(ctx): #service routine
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
-async def logcomrades(ctx): #service routine
+async def logcomrades(ctx): #creates a log file with all comrade role members
     """Updates log json file with all comrades. Can only be used by Tyrant"""
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
     if flag:
-        allComrades = ListRoleMembers(bot, DEF_ROLE)
-        datetimenow = datetime.datetime.now().strftime("%Y_%m_%d_id%S")
-        with open(f"./logs/comarades_{datetimenow}.json", "w") as write_file:
-            data = {}
-            for _ in allComrades:
-                data[_.id] = {"name":_.name, "nick":_.nick, "discriminator":_.discriminator, "roles":[_a.name for _a in _.roles]}
-            json.dump(data, write_file)
+        saveComrades(ListRoleMembers(ctx, DEF_ROLE))
+        await ctx.send("Comrade role logs are created")
     else:
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
-async def reportcomrades(ctx): #service routine
+async def reportcomrades(ctx): #Sends to discord log in friendly format
     """Prints latest log json file with all comrades. Can only be used by Tyrant"""
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
     if flag:
-        dir_list = os.listdir("./logs")
-        compare_time = 0
-        fileFound = ""
-
-        for _ in dir_list:
-            if _.startswith("comarades"):
-                fileCreaTime = os.path.getmtime(f"./logs/{_}")
-                if compare_time == 0:
-                    compare_time = fileCreaTime
-                    fileFound = _
-                else:
-                    if compare_time > fileCreaTime:
-                        compare_time = fileCreaTime
-                        fileFound = _
+        fileFound = findLatFileBegWith(os.listdir(LOGS_PATH), "comrade")
         if fileFound != "":
-            with open(f"./logs/{fileFound}") as read_file:
-                dataComrades = json.load(read_file)
-
-            block_size = 5
-
-            counter = 0
-            message = ""
-            message_blocks = []
-            for _ in dataComrades:
-                message += (f"User ID {str(_)}:\n")
-                for _a in dataComrades[_]:
-                    if _a == "roles":
-                        dataComrades[_][_a] = [_aa for _aa in dataComrades[_][_a] if _aa != "@everyone"]
-                    message += (f"\t\t{_a}: {dataComrades[_][_a]}\n")
-                message += "\n "
-                counter += 1
-                if counter == block_size:
-                    message_blocks.append(message)
-                    counter = 0
-                    message = ""
-            if message != "":
-                message_blocks.append(message)
-            for block in message_blocks:
+            messages_list = getComrades(fileFound)
+            for block in MessagesToBlocks(messages_list):
                 await ctx.send(block)
-
         else:
             await ctx.send("No logs for comrades were yet created")
     else:
