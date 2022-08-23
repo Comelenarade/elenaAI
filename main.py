@@ -1,11 +1,11 @@
-import discord, asyncio, random, os
+import discord, asyncio, random, os, datetime
 from discord.ext import commands
 
 from helpers import *
 from loghelpers import *
 
 from const.TOKEN import TOKEN
-from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE, CLASS_DUP_ERROR
+from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE, CLASS_DUP_ERROR, REMINDER_HELP
 
 COMMANDMENTS = ""
 
@@ -17,6 +17,8 @@ ADMINS_ROLE = "Elena Gubankova"
 ELENA_CHANNEL = "elena"
 
 MIN_PEOPLE_CHANNEL = 4
+
+utc_dt = datetime.datetime.now(datetime.timezone.utc)
 
 intents = discord.Intents.all()
 intents.members = True
@@ -196,5 +198,18 @@ async def reportcomrades(ctx): #Sends to discord log in friendly format
             await ctx.send("No logs for comrades were yet created")
     else:
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+
+@bot.command()
+async def reminder(ctx, *remindAt: str):
+    print(remindAt)
+    if (remindAt == () or remindAt[0].startswith("-h")):
+        await ctx.send(REMINDER_HELP)
+    else:
+        reminder = {}
+        if (remindAt[0].startswith("-at")): # format MM DD YYYY HH MM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            for _ in remindAt[1:]:
+
+        if (remindAt[0].startswith("-in")):
+            pass
 
 bot.run(TOKEN)

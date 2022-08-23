@@ -22,3 +22,10 @@ MAJOR_END_MESSAGE = ("Congratulations, comrade! You finished registration proces
                         " good luck and always praise Elena")
 
 ONLINE_MESSAGE = "Prepare to fight for the cause of the Elena Comrades!"
+
+REMINDER_HELP = ("usage: ?reminder [-at/-in/-h] [when] [tag] [message]\n"
+                    "\t -h:  simply prints this help\n"
+                    "\t -at: You need to specify day and time you want to be reminded.\n"
+                    "\t\t\t [when]: format: '?remind -at MM DD YYYY HH MM @example1 @example2 any text any length you w a n t'\n"
+                    "\t -in: You need to specify in how many hours you want to be reminded.\n"
+                    "\t\t\t [when]: format: '?remind -in HH MM @example1 @example2 any text any length you w a n t'\n")
