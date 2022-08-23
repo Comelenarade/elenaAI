@@ -94,3 +94,10 @@ def CheckPermissionRole(context, role_check): #checks if person has needed permi
 def ListRoleMembers(context, role_check): #return list of everyone with role, list of objects
     role_add = discord.utils.get(context.guild.roles, name=role_check)
     return role_add.members
+
+def CheckValue(valueCheck, valueRe, valueOutputs):
+    r = re.compile('[A-zA-Z]{4}[0-9]{4}')
+    if valueRe.match(class_input) is not None:
+        return True
+    else:
+        return False

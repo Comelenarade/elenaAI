@@ -5,7 +5,8 @@ from helpers import *
 from loghelpers import *
 
 from const.TOKEN import TOKEN
-from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE, CLASS_DUP_ERROR, REMINDER_HELP
+from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
+from const.TEXT import CLASS_DUP_ERROR, REMINDER_HELP, END_OF_SEMESTER1, END_OF_SEMESTER2
 
 COMMANDMENTS = ""
 
@@ -15,6 +16,7 @@ GULAG_ROLE = 'GULAG'
 TYRANT_ROLE  = "Tyrant"
 ADMINS_ROLE = "Elena Gubankova"
 ELENA_CHANNEL = "elena"
+ALL_OTHER_CHANNELS = "All Other Classes"
 
 MIN_PEOPLE_CHANNEL = 4
 
@@ -206,10 +208,63 @@ async def reminder(ctx, *remindAt: str):
         await ctx.send(REMINDER_HELP)
     else:
         reminder = {}
-        if (remindAt[0].startswith("-at")): # format MM DD YYYY HH MM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            for _ in remindAt[1:]:
-
+        if (remindAt[0].startswith("-at")): # format MM DD YY HH MM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            if (len(remindAt) < 8): #-at[0] MM[1] DD[2] YY[3] HH[4] MM[5] @tag[6] text[7] <- minimum
+                await ctx.send("Not enough arguments. Try once more, idiot.")
+            else:
+                for _ in remindAt[1:5]:
+                    pass
+                reminder["MM_DD_YY"] = [remindAt[1], remindAt[2], remindAt[3]]
+                reminder["HH_MM"] = [remindAt[4], remindAt[5]]
+                print()
+                r = re.compile('[0-9]{4}')
+                for _ in remindAt[1:]:
+                    pass
         if (remindAt[0].startswith("-in")):
             pass
+
+@bot.command()
+async def endofsemester(ctx, term = "spring23"):
+    elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
+    adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
+    await elenaChnl.send(f"{adminsRole.mention} END OF SEMESTER SEQUENCE INITIATED")
+
+    statChannels = {}
+    classStatChannels = {}
+    delChannels = []
+    message = ["channel\t-\tcategory\t-\tnum of people\t-\ttotal in category\n"]
+    classMessage = []
+    for _ in ctx.guild.text_channels:
+        count = 0
+        async for _message in _.history(limit=None): count += 1
+
+        if (_.category is None): _cat = "None"
+        else: _cat = _.category.name
+
+        if _cat not in statChannels: statChannels[_cat] = count
+        else: statChannels[_cat] += count
+
+        message.append(f"{_.name}\t-\t{_cat}\t-\t{count}\t-\t{statChannels[_cat]}\n")
+
+        _catSplit = _cat.split(" ")
+        if ((len(_catSplit) > 2) or _cat == ALL_OTHER_CHANNELS):
+            if (ClassCheck(f"{_catSplit[0]}{_catSplit[1]}") or _cat == ALL_OTHER_CHANNELS):
+                delChannels.append(_)
+                if _cat not in classStatChannels: classStatChannels[_cat] = count
+                else: classStatChannels[_cat] += count
+
+    for _ in classStatChannels:
+        classMessage.append(f"\t\t{_} - {classStatChannels[_]} messages\n")
+
+    for block in MessagesToBlocks(message):
+        await elenaChnl.send(block)
+
+    print(delChannels)
+    print(statChannels)
+
+    await ctx.send(END_OF_SEMESTER1)
+    for block in MessagesToBlocks(classMessage):
+        await  ctx.send(block)
+    await ctx.send(END_OF_SEMESTER2)
 
 bot.run(TOKEN)

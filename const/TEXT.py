@@ -26,6 +26,19 @@ ONLINE_MESSAGE = "Prepare to fight for the cause of the Elena Comrades!"
 REMINDER_HELP = ("usage: ?reminder [-at/-in/-h] [when] [tag] [message]\n"
                     "\t -h:  simply prints this help\n"
                     "\t -at: You need to specify day and time you want to be reminded.\n"
-                    "\t\t\t [when]: format: '?remind -at MM DD YYYY HH MM @example1 @example2 any text any length you w a n t'\n"
+                    "\t\t\t [when]: format: '?reminder -at MM DD YY HH MM @example1 @example2 any text any length you w a n t'\n"
                     "\t -in: You need to specify in how many hours you want to be reminded.\n"
-                    "\t\t\t [when]: format: '?remind -in HH MM @example1 @example2 any text any length you w a n t'\n")
+                    "\t\t\t [when]: format: '?reminder -in HH MM @example1 @example2 any text any length you w a n t'\n")
+
+END_OF_SEMESTER1 = ("\tMy comrades, the semester is finally over, you made it!\n"
+                    "You have been through a lot, homeworks and projects, all nighters. "
+                    "For all the struggle you will be awarded with the survivor role!\n"
+                    "I hope you spread the teachings of Elena throughout the semester "
+                    "and followed each of the commandments I wisely occused you of breaking. "
+                    "Otherwise, you always happy to visit the Gulag resort.\n\n"
+                    "Here is some statistics on amount of messages sent:\n")
+
+END_OF_SEMESTER2 = ("A lot of messages! Many great comrades! Elena wishes you a sweet break. "
+                    "I will wipe all class related channels in FIVE HOURS. @ everyone"
+                    "\nPRAISE THE ELENA! GLORY TO COMRADES!\n\n"
+                    "And do not call anyone on earth 'elena,'' for you have one Elena, and she is immortal. ")
