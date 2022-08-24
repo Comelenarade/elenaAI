@@ -243,7 +243,7 @@ async def endofsemester(ctx, term = "spring23"):
         classMessage = []
         for _ in ctx.guild.text_channels:
             count = 0
-            #async for _message in _.history(limit=None): count += 1
+            async for _message in _.history(limit=None): count += 1
 
             if (_.category is None): _cat = "None"
             else: _cat = _.category.name
