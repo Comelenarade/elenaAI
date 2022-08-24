@@ -36,9 +36,9 @@ END_OF_SEMESTER1 = ("\tMy comrades, the semester is finally over, you made it!\n
                     "I hope you spread the teachings of Elena throughout the semester "
                     "and followed each of the commandments I wisely occused you of breaking. "
                     "Otherwise, you always happy to visit the Gulag resort.\n\n"
-                    "Here is some statistics on amount of messages sent:\n")
+                    "Here is some statistics on amount of messages sent:\n\n")
 
 END_OF_SEMESTER2 = ("A lot of messages! Many great comrades! Elena wishes you a sweet break. "
-                    "I will wipe all class related channels in FIVE HOURS. @ everyone"
+                    "I will wipe all class related channels in TEN MINUTES. @everyone"
                     "\nPRAISE THE ELENA! GLORY TO COMRADES!\n\n"
-                    "And do not call anyone on earth 'elena,'' for you have one Elena, and she is immortal. ")
+                    "And do not call anyone on earth 'elena,'' for you have one elena, and she is immortal. ")

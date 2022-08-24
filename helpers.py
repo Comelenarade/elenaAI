@@ -101,3 +101,11 @@ def CheckValue(valueCheck, valueRe, valueOutputs):
         return True
     else:
         return False
+
+def checkCategoryClass(categorie):
+    ALL_OTHER_CHANNELS = "All Other Classes"
+    _catSplit = categorie.split(" ")
+    if ((len(_catSplit) >= 2) or categorie == ALL_OTHER_CHANNELS):
+        if (ClassCheck(f"{_catSplit[0]}{_catSplit[1]}") or categorie == ALL_OTHER_CHANNELS):
+            return True
+    return False

@@ -179,11 +179,12 @@ async def logcomrades(ctx): #creates a log file with all comrade role members
     """Updates log json file with all comrades. Can only be used by Tyrant"""
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
+    elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
     if flag:
         saveComrades(ListRoleMembers(ctx, DEF_ROLE))
-        await ctx.send("Comrade role logs are created")
+        await elenaChnl.send("Comrade role logs are created")
     else:
-        await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+        await elenaChnl.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
 async def reportcomrades(ctx): #Sends to discord log in friendly format
@@ -225,46 +226,92 @@ async def reminder(ctx, *remindAt: str):
 
 @bot.command()
 async def endofsemester(ctx, term = "spring23"):
-    elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
-    adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
-    await elenaChnl.send(f"{adminsRole.mention} END OF SEMESTER SEQUENCE INITIATED")
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
+    if flag:
+        elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
+        adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
+        await elenaChnl.send(f"{adminsRole.mention} END OF SEMESTER SEQUENCE INITIATED")
 
-    statChannels = {}
-    classStatChannels = {}
-    delChannels = []
-    message = ["channel\t-\tcategory\t-\tnum of people\t-\ttotal in category\n"]
-    classMessage = []
-    for _ in ctx.guild.text_channels:
-        count = 0
-        async for _message in _.history(limit=None): count += 1
+        statChannels = {}
+        classStatChannels = {}
+        delChannels = []
+        delVoice = []
+        delCategor = []
+        message = ["channel\t-\tcategory\t-\tnum of people\t-\ttotal in category\n"]
+        classMessage = []
+        for _ in ctx.guild.text_channels:
+            count = 0
+            #async for _message in _.history(limit=None): count += 1
 
-        if (_.category is None): _cat = "None"
-        else: _cat = _.category.name
+            if (_.category is None): _cat = "None"
+            else: _cat = _.category.name
 
-        if _cat not in statChannels: statChannels[_cat] = count
-        else: statChannels[_cat] += count
+            if _cat not in statChannels: statChannels[_cat] = count
+            else: statChannels[_cat] += count
 
-        message.append(f"{_.name}\t-\t{_cat}\t-\t{count}\t-\t{statChannels[_cat]}\n")
+            message.append(f"{_.name}\t-\t{_cat}\t-\t{count}\t-\t{statChannels[_cat]}\n")
 
-        _catSplit = _cat.split(" ")
-        if ((len(_catSplit) > 2) or _cat == ALL_OTHER_CHANNELS):
-            if (ClassCheck(f"{_catSplit[0]}{_catSplit[1]}") or _cat == ALL_OTHER_CHANNELS):
+            if checkCategoryClass(_cat):
                 delChannels.append(_)
                 if _cat not in classStatChannels: classStatChannels[_cat] = count
                 else: classStatChannels[_cat] += count
 
-    for _ in classStatChannels:
-        classMessage.append(f"\t\t{_} - {classStatChannels[_]} messages\n")
+        for _ in ctx.guild.voice_channels:
+            if (_.category is None): _cat = "None"
+            else: _cat = _.category.name
 
-    for block in MessagesToBlocks(message):
-        await elenaChnl.send(block)
+            if checkCategoryClass(_cat):
+                delVoice.append(_)
 
-    print(delChannels)
-    print(statChannels)
+        for _ in ctx.guild.categories:
+            if checkCategoryClass(_.name):
+                delCategor.append(_)
 
-    await ctx.send(END_OF_SEMESTER1)
-    for block in MessagesToBlocks(classMessage):
-        await  ctx.send(block)
-    await ctx.send(END_OF_SEMESTER2)
+        classStatChannels = dict(sorted(classStatChannels.items(), key=lambda item: item[1], reverse=True))
+
+        for _ in classStatChannels:
+            if len(classMessage) == 0:
+                classMessage.append(f"MOST MESSAGES: {_} - {classStatChannels[_]} messages\n")
+            else:
+                classMessage.append(f"\t\t{_} - {classStatChannels[_]} messages\n")
+
+        for block in MessagesToBlocks(message): #elena channel logs
+            await elenaChnl.send(block)
+
+        #output
+        await ctx.send(f"SEMESTER {term} OFFICIALLY OVER!")
+        await ctx.send(END_OF_SEMESTER1)
+        for block in MessagesToBlocks(classMessage):
+            await  ctx.send(block)
+        await ctx.send(f".\n\t {len(ListRoleMembers(ctx, DEF_ROLE))} ELENA COMRADES")
+        await ctx.send(END_OF_SEMESTER2)
+
+        #DELAY
+        await elenaChnl.send(f"{tyrantRole.mention} WIPE IN TEN MINUTES")
+        await asyncio.sleep(10*60)
+
+        #DELETING CHANNELS
+        for _ in delChannels:
+            await _.delete(reason = "end of sem")
+        for _ in delVoice:
+            await _.delete(reason = "end of sem")
+        for _ in delCategor:
+            await _.delete(reason = "end of sem")
+
+        #SAVING COMRADES LOGS
+        await ctx.invoke(bot.get_command('logcomrades'))
+
+        #DELETING ROLES
+        for _ in ctx.guild.roles:
+            print(_.name)
+            if checkCategoryClass(_.name):
+                await _.delete(reason = "end of sem")
+
+    else:
+        message = f"This command can only be used by great {limit_to}. you have just tried to delete whole server."
+        message += f" Maybe you really need to, then {tyrantRole.mention} can help you."
+        await ctx.send(message)
 
 bot.run(TOKEN)
