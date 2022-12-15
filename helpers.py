@@ -70,6 +70,8 @@ def RolesCounterClasses(context): #stats for people taking classes
             roles_pop.append(role)
     for role in roles_pop:
         all_roles_counter.pop(role)
+    if all_roles_counter == {}:
+        all_roles_counter = {"no classroles":"no"}
     return dict(sorted(all_roles_counter.items(), key=lambda x: x[1])) #sort
 
 def ClassCheck(class_input): #Check if input (ex. MATH2100) class matches format
