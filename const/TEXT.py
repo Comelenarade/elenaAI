@@ -26,7 +26,7 @@ ONLINE_MESSAGE = "Prepare to fight for the cause of the Elena Comrades!"
 REMINDER_HELP = ("usage: ?reminder [-at/-in/-h] [when] [tag] [message]\n"
                     "\t -h:  simply prints this help\n"
                     "\t -at: You need to specify day and time you want to be reminded.\n"
-                    "\t\t\t [when]: format: '?reminder -at MM DD YY HH MM @example1 @example2 any text any length you w a n t'\n"
+                    "\t\t\t [when]: format: '?reminder -at MM DD YY HH MM PM/AM @as @many @tags @as_you_want any text any length'\n"
                     "\t -in: You need to specify in how many hours you want to be reminded.\n"
                     "\t\t\t [when]: format: '?reminder -in HH MM @example1 @example2 any text any length you w a n t'\n")
 

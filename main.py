@@ -189,7 +189,7 @@ async def logcomrades(ctx): #creates a log file with all comrade role members
 @bot.command()
 async def reportcomrades(ctx): #Sends to discord log in friendly format
     """Prints latest log json file with all comrades. Can only be used by Tyrant"""
-    limit_to = TYRANT_ROLE
+    limit_to = ADMINS_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
     if flag:
         fileFound = findLatFileBegWith(os.listdir(LOGS_PATH), "comrade")
@@ -209,8 +209,8 @@ async def reminder(ctx, *remindAt: str):
         await ctx.send(REMINDER_HELP)
     else:
         reminder = {}
-        if (remindAt[0].startswith("-at")): # format MM DD YY HH MM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
-            if (len(remindAt) < 8): #-at[0] MM[1] DD[2] YY[3] HH[4] MM[5] @tag[6] text[7] <- minimum
+        if (remindAt[0].startswith("-at")): # format MM DD YY HH MM PM/AM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+            if (len(remindAt) < 9): #-at[0] MM[1] DD[2] YY[3] HH[4] MM[5] PM/AM[6] @tag[7] text[8] <- minimum
                 await ctx.send("Not enough arguments. Try once more, idiot.")
             else:
                 for _ in remindAt[1:5]:
@@ -305,7 +305,6 @@ async def endofsemester(ctx, term = "spring23"):
 
         #DELETING ROLES
         for _ in ctx.guild.roles:
-            print(_.name)
             if checkCategoryClass(_.name):
                 await _.delete(reason = "end of sem")
 
