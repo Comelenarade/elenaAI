@@ -1,4 +1,4 @@
-import discord, asyncio, random, os, datetime
+import discord, asyncio, random, os, datetime, sys, git
 from discord.ext import commands
 
 from helpers import *
@@ -201,6 +201,17 @@ async def reportcomrades(ctx): #Sends to discord log in friendly format
             await ctx.send("No logs for comrades were yet created")
     else:
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+
+@bot.command()
+async def restartandpull(ctx):
+    print("RESTART")
+    
+    await ctx.send("PULLING")
+    g = git.Git('https://github.com/Comelenarade/elenaAI.git')
+    g.pull('origin','main')
+
+    await ctx.send("RESTARTING")
+    os.execv(sys.executable, ['python3'] + sys.argv)
 
 @bot.command()
 async def reminder(ctx, *remindAt: str):
