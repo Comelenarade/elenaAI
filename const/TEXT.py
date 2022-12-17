@@ -21,7 +21,7 @@ CLASS_DUP_ERROR = "You listed this class twice. Will just ignore the duplicate a
 MAJOR_END_MESSAGE = ("Congratulations, comrade! You finished registration process! Double check all classes and major assignments."
                         " good luck and always praise Elena")
 
-ONLINE_MESSAGE = "TEST TEST Prepare to fight for the cause of the Elena Comrades!"
+ONLINE_MESSAGE = "Prepare to fight for the cause of the Elena Comrades!"
 
 REMINDER_HELP = ("usage: ?reminder [-at/-in/-h] [when] [tag] [message]\n"
                     "\t -h:  simply prints this help\n"
