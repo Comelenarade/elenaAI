@@ -44,6 +44,7 @@ async def on_member_join(member): #when new person joins, welcome them
 @bot.command()
 async def online(ctx): #check status
     """Sends a message to a chat."""
+    await ctx.send("yes my master")
     await ctx.send(ONLINE_MESSAGE)
 
 @bot.command()
