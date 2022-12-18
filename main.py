@@ -204,18 +204,23 @@ async def reportcomrades(ctx): #Sends to discord log in friendly format
 
 @bot.command()
 async def restartandpull(ctx):
-    print("RESTART")
-    
-    await ctx.send("PULLING")
-    g = git.Git('https://github.com/Comelenarade/elenaAI.git')
-    g.pull('origin','main')
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        print("RESTART")
+        
+        await ctx.send("PULLING")
+        g = git.Git('https://github.com/Comelenarade/elenaAI.git')
+        g.pull('origin','main')
 
-    await ctx.send("RESTARTING")
-    os.execv(sys.executable, ['python3'] + sys.argv)
+        await ctx.send("RESTARTING")
+        os.execv(sys.executable, ['python3'] + sys.argv)
+    else:
+        await ctx.send("no. only tyrant can restart me")
 
 @bot.command()
 async def printodo(ctx):
-    print(os.system("cat todo.txt"))
+    await ctx.send(os.system("cat todo.txt"))
 
 @bot.command()
 async def reminder(ctx, *remindAt: str):
