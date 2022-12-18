@@ -220,7 +220,7 @@ async def restartandpull(ctx):
 
 @bot.command()
 async def printodo(ctx):
-    await ctx.send(os.system("cat todo.txt"))
+    await ctx.send(os.popen("cat todo.txt").read())
 
 @bot.command()
 async def reminder(ctx, *remindAt: str):
