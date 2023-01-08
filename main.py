@@ -6,7 +6,7 @@ from loghelpers import *
 
 from const.TOKEN import TOKEN
 from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
-from const.TEXT import CLASS_DUP_ERROR, REMINDER_HELP, END_OF_SEMESTER1, END_OF_SEMESTER2
+from const.TEXT import CLASS_DUP_ERROR, REMINDER_HELP, END_OF_SEMESTER1, END_OF_SEMESTER2, BEGIN_OF_SEMESTER
 
 COMMANDMENTS = ""
 
@@ -229,14 +229,22 @@ async def reminder(ctx, *remindAt: str):
         await ctx.send(REMINDER_HELP)
     else:
         reminder = {}
-        if (remindAt[0].startswith("-at")): # format MM DD YY HH MM PM/AM datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+        if (remindAt[0].startswith("-at")):
             if (len(remindAt) < 9): #-at[0] MM[1] DD[2] YY[3] HH[4] MM[5] PM/AM[6] @tag[7] text[8] <- minimum
                 await ctx.send("Not enough arguments. Try once more, idiot.")
             else:
-                for _ in remindAt[1:5]:
-                    pass
-                reminder["MM_DD_YY"] = [remindAt[1], remindAt[2], remindAt[3]]
-                reminder["HH_MM"] = [remindAt[4], remindAt[5]]
+                
+                reminder_MM_DD_YY = f"{remindAt[1]}_{remindAt[2]}_{remindAt[3]}"
+
+                if remindAt[6].lower() == "am":
+                    reminder_HH_MM = f"{remindAt[4]}_{remindAt[5]}"
+                else:
+                    reminder_HH_MM = f"{int(remindAt[4])+12}_{remindAt[5]}"
+
+                reminder_datetime = datetime.datetime.strptime(f"{reminder_MM_DD_YY} {reminder_HH_MM}", '%m_%d_%Y %H_%M')
+
+                await ctx.send(f"will remind u at {reminder_datetime}")
+
                 print()
                 r = re.compile('[0-9]{4}')
                 for _ in remindAt[1:]:
@@ -332,5 +340,43 @@ async def endofsemester(ctx, term = "spring23"):
         message = f"This command can only be used by great {limit_to}. you have just tried to delete whole server."
         message += f" Maybe you really need to, then {tyrantRole.mention} can help you."
         await ctx.send(message)
+
+@bot.command()
+async def beginsemester(ctx, term = "spring23"):
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
+    if flag:
+        elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
+        welcome_channel = bot.get_channel(WELCOME_CHANNEL)
+        adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
+        
+        #await elenaChnl.send(f"{adminsRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
+        await elenaChnl.send(f"{tyrantRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
+
+        _all_comrades = ListRoleMembers(ctx, DEF_ROLE)
+
+        #output
+        await ctx.send(f"SEMESTER {term} OFFICIALLY BEGINS!")
+        await ctx.send(BEGIN_OF_SEMESTER)
+        
+        await ctx.send(WELCOME_MESSAGE)
+        #await welcome_channel.send(WELCOME_MESSAGE)
+        await welcome_channel.send("test")
+
+        #DELAY
+        await elenaChnl.send(f"{tyrantRole.mention} REMOVING COMRADE ROLE FROM EVERYONE IN TEN MINUTES")
+        await asyncio.sleep(10*60)
+
+        #REMOVE COMRADE ROLE
+        #_role_remove = discord.utils.get(ctx.guild.roles, name= DEF_ROLE)
+        _role_remove = discord.utils.get(ctx.guild.roles, name= "testtesttest")
+        for _ in _all_comrades:
+            await _.remove_roles(_role_remove)
+
+    else:
+        message = f"This command can only be used by {limit_to}."
+        await ctx.send(message)
+    
 
 bot.run(TOKEN)

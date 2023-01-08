@@ -42,3 +42,11 @@ END_OF_SEMESTER2 = ("A lot of messages! Many great comrades! Elena wishes you a 
                     "I will wipe all class related channels in TEN MINUTES. @everyone"
                     "\nPRAISE THE ELENA! GLORY TO COMRADES!\n\n"
                     "And do not call anyone on earth 'elena,'' for you have one elena, and she is immortal. ")
+
+BEGIN_OF_SEMESTER = ("\tMy comrades, it is that time of the year again, the beggining of great suffering.\n"
+                    "Soon there will be homeworks, projects, all nighters, exams, panic attacks... "
+                    "However, I advice you to look to the bright side of it,"
+                    "not only you are being provided with the most powerful tool there is - knowledge, but moreover"
+                    "you do gain it all together. We, the comrades, are the community and will help each other.\n\n"
+                    "YOUR COMRADE ROLE WILL BE TAKEN AWAY IN 10 MINUTES AND THEREFORE YOU LOSE ACCESS TO MOST OF SERVER.\n"
+                    "TO GAIN IT BACK FOLLOW THE RULES BELOW. PRAISE THE ELENA! GLORY TO COMRADES!\n\n")
