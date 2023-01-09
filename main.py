@@ -259,7 +259,7 @@ async def endofsemester(ctx, term = "spring23"):
     tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
     if flag:
         elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
-        adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
+        adminsRole = discord.utils.get(ctx.guild.roles, name= ADMINS_ROLE) #ADMINS_ROLE
         await elenaChnl.send(f"{adminsRole.mention} END OF SEMESTER SEQUENCE INITIATED")
 
         statChannels = {}
@@ -348,7 +348,7 @@ async def beginsemester(ctx, term = "spring23"):
     tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
     if flag:
         elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
-        adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
+        adminsRole = discord.utils.get(ctx.guild.roles, name= ADMINS_ROLE) #ADMINS_ROLE
         
         await elenaChnl.send(f"{adminsRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
 
