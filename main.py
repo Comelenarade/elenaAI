@@ -348,11 +348,9 @@ async def beginsemester(ctx, term = "spring23"):
     tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
     if flag:
         elenaChnl = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
-        welcome_channel = bot.get_channel(WELCOME_CHANNEL)
         adminsRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE) #ADMINS_ROLE
         
-        #await elenaChnl.send(f"{adminsRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
-        await elenaChnl.send(f"{tyrantRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
+        await elenaChnl.send(f"{adminsRole.mention} BEGGINING OF SEMESTER SEQUENCE INITIATED")
 
         _all_comrades = ListRoleMembers(ctx, DEF_ROLE)
 
@@ -361,18 +359,16 @@ async def beginsemester(ctx, term = "spring23"):
         await ctx.send(BEGIN_OF_SEMESTER)
         
         await ctx.send(WELCOME_MESSAGE)
-        #await welcome_channel.send(WELCOME_MESSAGE)
-        await welcome_channel.send("test")
 
         #DELAY
         await elenaChnl.send(f"{tyrantRole.mention} REMOVING COMRADE ROLE FROM EVERYONE IN TEN MINUTES")
         await asyncio.sleep(10*60)
 
         #REMOVE COMRADE ROLE
-        #_role_remove = discord.utils.get(ctx.guild.roles, name= DEF_ROLE)
-        _role_remove = discord.utils.get(ctx.guild.roles, name= "testtesttest")
         for _ in _all_comrades:
-            await _.remove_roles(_role_remove)
+            await _.remove_roles(discord.utils.get(ctx.guild.roles, name= DEF_ROLE))
+        
+        await elenaChnl.send("all set. semester started")
 
     else:
         message = f"This command can only be used by {limit_to}."
