@@ -17,6 +17,7 @@ TYRANT_ROLE  = "Tyrant"
 ADMINS_ROLE = "Elena Gubankova"
 ELENA_CHANNEL = "elena"
 ALL_OTHER_CHANNELS = "All Other Classes"
+README_CHANNEL = "readme"
 
 MIN_PEOPLE_CHANNEL = 4
 
@@ -373,6 +374,28 @@ async def beginsemester(ctx, term = "spring23"):
     else:
         message = f"This command can only be used by {limit_to}."
         await ctx.send(message)
+
+@bot.command()
+async def autoclassroles(ctx):
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
+    if flag:
+        _message_channel = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
+        message = await ctx.send("cock")
+        while(1):
+            await asyncio.sleep(2)
+            await message.edit(content="balls")
+            await asyncio.sleep(2)
+            await message.edit(content="cock")
+    else:
+        message = f"This command can only be used by {limit_to}."
+        await ctx.send(message)
+
+@bot.command()
+async def startcockballs(ctx):
+    await ctx.invoke(bot.get_command('autoclassroles'))
+
     
 
 bot.run(TOKEN)
