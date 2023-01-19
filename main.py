@@ -18,6 +18,7 @@ ADMINS_ROLE = "Elena Gubankova"
 ELENA_CHANNEL = "elena"
 ALL_OTHER_CHANNELS = "All Other Classes"
 README_CHANNEL = "readme"
+MESSAGE_AFTER_STATS_README_CHANNEL = "/\ real-time updated class roles stats: /\ "
 
 MIN_PEOPLE_CHANNEL = 4
 
@@ -393,8 +394,45 @@ async def autoclassroles(ctx):
         await ctx.send(message)
 
 @bot.command()
-async def startcockballs(ctx):
-    await ctx.invoke(bot.get_command('autoclassroles'))
+async def initrolestat(ctx):
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
+    if flag:
+        channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
+        
+        await channel.send("\\\/ real-time updated class roles stats: \\\/ ")
+        await ctx.invoke(bot.get_command('classroles'))
+        await channel.send(MESSAGE_AFTER_STATS_README_CHANNEL)
+    else:
+        message = f"This command can only be used by {limit_to}."
+        await ctx.send(message)
+    
+@bot.command()
+async def trigrolestatupdate(ctx):
+    limit_to = TYRANT_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
+    if flag:
+        _message_channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
+        
+        _found = 0
+        async for message in _message_channel.history(limit=20):
+            if _found: break
+            if message.content == MESSAGE_AFTER_STATS_README_CHANNEL:
+                _found = 1
+                
+        await message.edit(content="cock")
+
+    else:
+        message = f"This command can only be used by {limit_to}."
+        await ctx.send(message)
+    
+@bot.command()
+async def idtheft(ctx, *sometext: str):
+    await ctx.message.delete()
+    await ctx.send(" ".join(sometext))
+
 
     
 
