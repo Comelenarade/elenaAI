@@ -174,6 +174,7 @@ async def checkclasses(ctx): #service routine
                     empty_role = discord.utils.get(ctx.guild.roles, name= role)
                     await empty_role.delete(reason="no members")
         await elenaChnl.send("done with empty roles check")
+        await ctx.invoke(bot.get_command('trigrolestatupdate'))
     else:
         await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
 
@@ -338,6 +339,7 @@ async def endofsemester(ctx, term = "spring23"):
         for _ in ctx.guild.roles:
             if checkCategoryClass(_.name):
                 await _.delete(reason = "end of sem")
+        await ctx.invoke(bot.get_command('trigrolestatupdate'))
 
     else:
         message = f"This command can only be used by great {limit_to}. you have just tried to delete whole server."
