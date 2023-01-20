@@ -7,6 +7,7 @@ from loghelpers import *
 from const.TOKEN import TOKEN
 from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
 from const.TEXT import CLASS_DUP_ERROR, REMINDER_HELP, END_OF_SEMESTER1, END_OF_SEMESTER2, BEGIN_OF_SEMESTER
+from const.TEXT import MESSAGE_BEFORE_STATS_README_CHANNEL, MESSAGE_AFTER_STATS_README_CHANNEL
 
 COMMANDMENTS = ""
 
@@ -18,7 +19,6 @@ ADMINS_ROLE = "Elena Gubankova"
 ELENA_CHANNEL = "elena"
 ALL_OTHER_CHANNELS = "All Other Classes"
 README_CHANNEL = "readme"
-MESSAGE_AFTER_STATS_README_CHANNEL = "/\ real-time updated class roles stats: /\ "
 
 MIN_PEOPLE_CHANNEL = 4
 
@@ -113,6 +113,7 @@ async def classes(ctx, *classes: str): #Assign classes to person
         await ctx.send(CLASS_END_MESSAGE)
 
     print("done for {}".format(ctx.author.name)) #console log
+    await ctx.invoke(bot.get_command('trigrolestatupdate'))
 
 @bot.command()
 async def major(ctx, major: str): #assign major to person, only after classes assigned
@@ -377,52 +378,63 @@ async def beginsemester(ctx, term = "spring23"):
         await ctx.send(message)
 
 @bot.command()
-async def autoclassroles(ctx):
-    limit_to = TYRANT_ROLE
-    flag = CheckPermissionRole(ctx, limit_to)
-    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
-    if flag:
-        _message_channel = discord.utils.get(ctx.guild.text_channels, name= ELENA_CHANNEL)
-        message = await ctx.send("cock")
-        while(1):
-            await asyncio.sleep(2)
-            await message.edit(content="balls")
-            await asyncio.sleep(2)
-            await message.edit(content="cock")
-    else:
-        message = f"This command can only be used by {limit_to}."
-        await ctx.send(message)
-
-@bot.command()
 async def initrolestat(ctx):
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
-    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
     if flag:
-        channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
+        _channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
         
-        await channel.send("\\\/ real-time updated class roles stats: \\\/ ")
-        await ctx.invoke(bot.get_command('classroles'))
-        await channel.send(MESSAGE_AFTER_STATS_README_CHANNEL)
+        await _channel.send(MESSAGE_BEFORE_STATS_README_CHANNEL)
+        
+        messg = RolesCounterPrepToPrint(RolesCounterClasses(ctx))
+        for block in messg:
+            await _channel.send(block)
+
+        await _channel.send(MESSAGE_AFTER_STATS_README_CHANNEL)
     else:
         message = f"This command can only be used by {limit_to}."
         await ctx.send(message)
     
 @bot.command()
 async def trigrolestatupdate(ctx):
-    limit_to = TYRANT_ROLE
+    limit_to = DEF_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
-    tyrantRole = discord.utils.get(ctx.guild.roles, name= TYRANT_ROLE)
     if flag:
-        _message_channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
+        _channel = discord.utils.get(ctx.guild.text_channels, name= README_CHANNEL)
+        all_messages = [message async for message in _channel.history(limit=15)]
+
+        #first message in list is the last message in channel
+        _found_end = 0
+        stat_messages = []
+        beg_end_messages = []
+        for _ in all_messages:
+            if _found_end:
+                if _.content == MESSAGE_BEFORE_STATS_README_CHANNEL:
+                    beg_end_messages.append(_)
+                    break
+                stat_messages.insert(0,_)
+            
+            if _.content == MESSAGE_AFTER_STATS_README_CHANNEL:
+                beg_end_messages.append(_)
+                _found_end = 1
         
-        _found = 0
-        async for message in _message_channel.history(limit=20):
-            if _found: break
-            if message.content == MESSAGE_AFTER_STATS_README_CHANNEL:
-                _found = 1
-                
-        await message.edit(content="cock")
+        new_stat = RolesCounterPrepToPrint(RolesCounterClasses(ctx))
+        
+        if len(new_stat) == len(stat_messages):
+            for _ in range(len(stat_messages)):
+                await stat_messages[_].edit(content=new_stat[_])
+        elif len(new_stat) < len(stat_messages):
+            for _ in range(len(stat_messages)):
+                try:
+                    await stat_messages[_].edit(content=new_stat[_])
+                except IndexError:
+                    await stat_messages[_].delete()
+        else:
+            for _ in beg_end_messages:
+                await _.delete()
+            for _ in stat_messages:
+                await _.delete()
+            await ctx.invoke(bot.get_command('initrolestat'))
 
     else:
         message = f"This command can only be used by {limit_to}."

@@ -50,3 +50,6 @@ BEGIN_OF_SEMESTER = ("\tMy comrades, it is that time of the year again, the begg
                     "you do gain it all together. We, the comrades, are the community and will help each other.\n\n"
                     "YOUR COMRADE ROLE WILL BE TAKEN AWAY IN 10 MINUTES AND THEREFORE YOU LOSE ACCESS TO MOST OF SERVER.\n"
                     "TO GAIN IT BACK FOLLOW THE RULES BELOW. \n\n PRAISE THE ELENA! GLORY TO COMRADES!")
+
+MESSAGE_BEFORE_STATS_README_CHANNEL = "\\\/ real-time updated class roles stats: \\\/"
+MESSAGE_AFTER_STATS_README_CHANNEL = "/\ real-time updated class roles stats: /\\"
