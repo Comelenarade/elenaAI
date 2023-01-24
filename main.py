@@ -224,7 +224,44 @@ async def restartandpull(ctx):
 
 @bot.command()
 async def printodo(ctx):
-    await ctx.send(os.popen("cat todo.txt").read())
+    limit_to = ADMINS_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        messages_list = todo_file()
+        if messages_list == []:
+            messages_list = ["no tasks"]
+        for block in MessagesToBlocks(messages_list):
+            await ctx.send(block)
+    else:
+        await ctx.send(f"This command can only be used by {limit_to}.")
+
+@bot.command()
+async def deltask(ctx, tasknum: str):
+    limit_to = ADMINS_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        try:
+            _task_int = int(tasknum)
+        except:
+            await ctx.send("u stupid?")
+            return
+        
+        if todo_delete(_task_int):
+            await ctx.send("done.")
+        else:
+            await ctx.send("stupido? check task nums")
+    else:
+        await ctx.send(f"This command can only be used by {limit_to}.")
+
+@bot.command()
+async def addtask(ctx, *task_add: str):
+    limit_to = ADMINS_ROLE
+    flag = CheckPermissionRole(ctx, limit_to)
+    if flag:
+        todo_add(" ".join(task_add))
+        await ctx.send("done.")
+    else:
+        await ctx.send(f"This command can only be used by {limit_to}.")
 
 @bot.command()
 async def reminder(ctx, *remindAt: str):

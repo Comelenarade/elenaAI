@@ -3,6 +3,7 @@ import json, datetime, os
 cwd = os.getcwd()
 LOGS_PATH = os.path.join(cwd, "logs")
 COMRADE_FILE = "comrade_"
+TODO_JSON = "todo.json"
 
 def checkLogPath():
     if not os.path.exists(LOGS_PATH):
@@ -46,6 +47,46 @@ def findLatFileBegWith(files_list, begWith): #return latest created file in the 
                     compare_time = fileCreaTime
                     fileRet = _
     return fileRet
+
+def todo_file():
+    with open(TODO_JSON) as read_file:
+        todo_tasks = json.load(read_file)
+    message=""
+    allMessages = []
+    for _ in todo_tasks:
+        message += (f"Task {str(_)}: {todo_tasks[_]}\n")
+        allMessages.append(message)
+        message=""
+    return allMessages
+
+def todo_delete(task_del):
+    with open(TODO_JSON) as f:
+        todo_tasks = json.load(f)
+        
+    try:
+        todo_tasks.pop(str(task_del))
+    except:
+        return 0
+
+    with open(TODO_JSON, "w") as f:
+        json.dump(todo_tasks, f)
+    return 1
+
+def todo_add(task_add):
+    with open(TODO_JSON) as f:
+        todo_tasks = json.load(f)
+    
+    if len(todo_tasks) == 0:
+        todo_tasks = {"0":task_add}
+    else:
+        _temp = 0
+        for _ in todo_tasks:
+            if int(_) > _temp:
+                _temp = int(_)
+        todo_tasks[str(_temp+1)] = str(task_add)
+
+    with open(TODO_JSON, "w") as f:
+        json.dump(todo_tasks, f)
 
 def saveReminder():
     pass

@@ -8,4 +8,7 @@ __pycache__/
 logs/
 
 #todo
-todo.txt
+todo.json
+
+#offline py file
+offline.py
