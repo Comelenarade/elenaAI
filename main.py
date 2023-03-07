@@ -146,6 +146,9 @@ async def gulagsmn(ctx, *person): #randomly gulag someone
         else:
             gulag_guy = ctx.message.mentions[0]
             gulag_length = random.randint(24, 24*5)
+        
+        if (len(person)>1):
+            gulag_length = int(person[1])
 
         
         gulag_reason = random.choice(COMMANDMENTS)
