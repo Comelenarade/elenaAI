@@ -88,6 +88,7 @@ def ClassFormat(class_input): #convert input into class name (ex. MATH2100 into 
     return new_class_name
 
 def CheckPermissionRole(context, role_check): #checks if person has needed permission, role (string)
+    #works woth message too, message.author.roles; abused used for gulag
     for role in context.author.roles:
         if role.name == role_check:
             return True

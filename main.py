@@ -135,14 +135,19 @@ async def major(ctx, major: str): #assign major to person, only after classes as
         await ctx.send("You must add classes first, sorry not sorry.")
 
 @bot.command()
-async def gulagsmn(ctx): #randomly gulag someone
+async def gulagsmn(ctx, *person): #randomly gulag someone
     """Sends random person to GULAG for 1-48 hours. Can only be used be Tyrant."""
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
-
     if flag:
-        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
-        gulag_length = random.randint(1, 48)
+        if (person == ()):
+            gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
+            gulag_length = random.randint(1, 48)
+        else:
+            gulag_guy = ctx.message.mentions[0]
+            gulag_length = random.randint(24, 24*5)
+
+        
         gulag_reason = random.choice(COMMANDMENTS)
 
         gulag_role = discord.utils.get(ctx.guild.roles, name= GULAG_ROLE)
@@ -151,11 +156,15 @@ async def gulagsmn(ctx): #randomly gulag someone
         await ctx.send(f"{gulag_guy.mention} sent to gulag for {gulag_length} hours. Reason is you are not following the principle of {gulag_reason[0]}: '{gulag_reason[1]}'")
 
         gulag_follow = random.choice(COMMANDMENTS)
+        print("gulaged", gulag_guy, "for", gulag_length, gulag_reason)
+
         await asyncio.sleep(gulag_length*60*60)
         await ctx.send(f"{gulag_guy.mention} your gulag sentence ended. stick to the following {gulag_follow[0]} principle: '{gulag_follow[1]}'")
+        print("ungulaged", gulag_guy)
+
         await gulag_guy.remove_roles(gulag_role)
     else:
-        await ctx.send(f"This command can only be used by great {limit_to}. suck some balls hahahahahha")
+        await ctx.send(f"This command can only be used by {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
 async def checkclasses(ctx): #service routine
@@ -484,7 +493,21 @@ async def idtheft(ctx, *sometext: str):
     await ctx.message.delete()
     await ctx.send(" ".join(sometext))
 
+#GULAG
+@bot.event
+async def on_message(message):
+    await bot.process_commands(message)
+    if (CheckPermissionRole(message, GULAG_ROLE)):
+        if (not message.content.startswith("?")):
+            namePrint = message.author.nick
+            if (namePrint == None): namePrint = message.author.name
 
-    
+            await message.channel.send(str(namePrint)+": "+message.content)
+
+            for _ in message.attachments:
+                attached = await _.to_file()
+                await message.channel.send(file=attached)
+            
+            await message.delete()        
 
 bot.run(TOKEN)
