@@ -145,6 +145,9 @@ async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
         gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
         gulag_length = random.randint(1, 48)
 
+        gulag_reason = random.choice(COMMANDMENTS)
+        gulag_message = f"Reason is you are not following the principle of {gulag_reason[0]}: '{gulag_reason[1]}'"
+
         if (CheckPermissionRole(ctx, ADMINS_ROLE) and len(person_time_reason) > 0):
             gulag_guy = ctx.message.mentions[0]
             
@@ -153,10 +156,7 @@ async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
             
             if (len(person_time_reason) > 2): 
                 gulag_message = f"Reason is someone wrote a denunciation stating that you {' '.join(person_time_reason[2:])}."
-            else: 
-                gulag_reason = random.choice(COMMANDMENTS)
-                gulag_message = f"Reason is you are not following the principle of {gulag_reason[0]}: '{gulag_reason[1]}'"
-
+        
         await gulag_guy.add_roles(gulag_role)
         await ctx.send(f"{gulag_guy.mention} sent to gulag for {gulag_length} hours. {gulag_message}")
 
