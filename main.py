@@ -8,7 +8,9 @@ from const.TOKEN import TOKEN
 from const.TEXT import WELCOME_MESSAGE, CLASS_NAME_RULE, CLASS_END_MESSAGE, MAJOR_END_MESSAGE, ONLINE_MESSAGE
 from const.TEXT import CLASS_DUP_ERROR, REMINDER_HELP, END_OF_SEMESTER1, END_OF_SEMESTER2, BEGIN_OF_SEMESTER
 from const.TEXT import MESSAGE_BEFORE_STATS_README_CHANNEL, MESSAGE_AFTER_STATS_README_CHANNEL
+from const.SWEARING import SWEARS
 
+global COMMANDMENTS
 COMMANDMENTS = ""
 
 WELCOME_CHANNEL = 786107233586905128
@@ -135,31 +137,31 @@ async def major(ctx, major: str): #assign major to person, only after classes as
         await ctx.send("You must add classes first, sorry not sorry.")
 
 @bot.command()
-async def gulagsmn(ctx, *person): #randomly gulag someone
-    """Sends random person to GULAG for 1-48 hours. Can only be used be Tyrant."""
-    limit_to = TYRANT_ROLE
-    flag = CheckPermissionRole(ctx, limit_to)
-    if flag:
-        if (person == ()):
-            gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
-            gulag_length = random.randint(1, 48)
-        else:
-            gulag_guy = ctx.message.mentions[0]
-            gulag_length = random.randint(24, 24*5)
-        
-        if (len(person)>1):
-            gulag_length = int(person[1])
-
-        
-        gulag_reason = random.choice(COMMANDMENTS)
-
+async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
+    """ALL can use send random person to GULAG for 1-48 hours function (?gulagsmn); ADMINS can indicate person (?gulagsmn @someone) / time in h (?gulagsmn @someone 123) /  reason (?gulagsm @smn 123 reason hahaha ahah)"""
+    if CheckPermissionRole(ctx, DEF_ROLE):
         gulag_role = discord.utils.get(ctx.guild.roles, name= GULAG_ROLE)
 
+        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
+        gulag_length = random.randint(1, 48)
+
+        if (CheckPermissionRole(ctx, ADMINS_ROLE) and len(person_time_reason) > 0):
+            gulag_guy = ctx.message.mentions[0]
+            
+            if (len(person_time_reason) > 1): gulag_length = int(person_time_reason[1])
+            else: gulag_length = random.randint(24, 24*5)
+            
+            if (len(person_time_reason) > 2): 
+                gulag_message = f"Reason is someone wrote a denunciation stating that you {' '.join(person_time_reason[2:])}."
+            else: 
+                gulag_reason = random.choice(COMMANDMENTS)
+                gulag_message = f"Reason is you are not following the principle of {gulag_reason[0]}: '{gulag_reason[1]}'"
+
         await gulag_guy.add_roles(gulag_role)
-        await ctx.send(f"{gulag_guy.mention} sent to gulag for {gulag_length} hours. Reason is you are not following the principle of {gulag_reason[0]}: '{gulag_reason[1]}'")
+        await ctx.send(f"{gulag_guy.mention} sent to gulag for {gulag_length} hours. {gulag_message}")
 
         gulag_follow = random.choice(COMMANDMENTS)
-        print("gulaged", gulag_guy, "for", gulag_length, gulag_reason)
+        print("gulaged", gulag_guy, "for", gulag_length, gulag_message)
 
         await asyncio.sleep(gulag_length*60*60)
         await ctx.send(f"{gulag_guy.mention} your gulag sentence ended. stick to the following {gulag_follow[0]} principle: '{gulag_follow[1]}'")
@@ -505,11 +507,21 @@ async def on_message(message):
             namePrint = message.author.nick
             if (namePrint == None): namePrint = message.author.name
 
-            await message.channel.send(str(namePrint)+": "+message.content)
+            if (len(message.attachments) == 0):
+                await message.channel.send("A letter came from GULAG: \n\n"
+                                            f"{message.content} \n\n"
+                                            f"{random.choice(SWEARS).capitalize()}, \n"
+                                            f"{str(namePrint)}")
+            else:
+                await message.channel.send("A letter came from GULAG: \n"
+                                            f"{message.content} \n")
 
-            for _ in message.attachments:
-                attached = await _.to_file()
-                await message.channel.send(file=attached)
+                for _ in message.attachments:
+                    attached = await _.to_file()
+                    await message.channel.send(file=attached)
+
+                await message.channel.send(f"{random.choice(SWEARS).capitalize()}, \n"
+                                            f"{str(namePrint)}")
             
             await message.delete()        
 
