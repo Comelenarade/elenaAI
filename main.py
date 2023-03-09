@@ -501,12 +501,12 @@ async def idtheft(ctx, *sometext: str):
 #GULAG
 @bot.event
 async def on_message(message):
-    await bot.process_commands(message)
+    _message = message
     if (CheckPermissionRole(message, GULAG_ROLE)):
+        namePrint = message.author.nick
+        if (namePrint == None): namePrint = message.author.name
+        
         if (not message.content.startswith("?")):
-            namePrint = message.author.nick
-            if (namePrint == None): namePrint = message.author.name
-
             if (len(message.attachments) == 0):
                 await message.channel.send("A letter came from GULAG: \n\n"
                                             f"{message.content} \n\n"
@@ -522,7 +522,10 @@ async def on_message(message):
 
                 await message.channel.send(f"{random.choice(SWEARS).capitalize()}, \n"
                                             f"{str(namePrint)}")
+        else:
+            await message.channel.send(f"GULAGed {str(namePrint)} requests to: {message.content}")
             
-            await message.delete()        
+        await message.delete()
+    await bot.process_commands(_message)
 
 bot.run(TOKEN)
