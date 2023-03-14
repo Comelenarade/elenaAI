@@ -495,26 +495,69 @@ async def trigrolestatupdate(ctx):
     
 @bot.command()
 async def idtheft(ctx, *sometext: str):
-    await ctx.message.delete()
-    await ctx.send(" ".join(sometext))
+    if ctx.message.reference is not None: reply_to = await ctx.fetch_message(ctx.message.reference.message_id)
+    else: reply_to = None
+    
+    if reply_to is not None: await reply_to.reply(" ".join(sometext))
+    else: await ctx.send(" ".join(sometext))
 
-#GULAG
+    if (len(ctx.message.attachments) > 0): 
+        for _ in ctx.message.attachments:
+            attached = await _.to_file()
+            await ctx.message.channel.send(file=attached)
+            
+    await ctx.message.delete()
+
 @bot.event
 async def on_message(message):
     _message = message
-    if (CheckPermissionRole(message, GULAG_ROLE)):
+
+    #super secret
+    if (message.channel.name == "super_secret"):
+        if (CheckPermissionRole(message, DEF_ROLE)):
+            if message.reference is not None: reply_to = await message.channel.fetch_message(message.reference.message_id)
+            else: reply_to = None
+
+            channel = message.channel
+
+            if (len(message.attachments) == 0): 
+                if reply_to is not None: await reply_to.reply(f"-------------------- \n {message.content} \n --------------------")
+                else: await message.channel.send(f"-------------------- \n {message.content} \n --------------------")
+                
+            else: 
+                if reply_to is not None: await reply_to.reply(f"-------------------- \n {message.content}")
+                else: await message.channel.send(f"-------------------- \n {message.content}")
+
+                for _ in message.attachments:
+                        attached = await _.to_file()
+                        await message.channel.send(file=attached)
+
+                await message.channel.send(f"--------------------")
+            
+            await message.delete()
+
+    #GULAG
+    elif (CheckPermissionRole(message, GULAG_ROLE)):
         namePrint = message.author.nick
         if (namePrint == None): namePrint = message.author.name
         
         if (not message.content.startswith("?")):
+            if message.reference is not None: reply_to = await message.channel.fetch_message(message.reference.message_id)
+            else: reply_to = None
+
             if (len(message.attachments) == 0):
-                await message.channel.send("A letter came from GULAG: \n\n"
+                _text_message = ("A letter came from GULAG: \n\n"
                                             f"{message.content} \n\n"
                                             f"{random.choice(SWEARS).capitalize()}, \n"
                                             f"{str(namePrint)}")
+                if reply_to is not None: await reply_to.reply(_text_message)
+                else: await message.channel.send(_text_message)
+
             else:
-                await message.channel.send("A letter came from GULAG: \n"
+                _text_message = ("A letter came from GULAG: \n"
                                             f"{message.content} \n")
+                if reply_to is not None: await reply_to.reply(_text_message)
+                else: await message.channel.send(_text_message)
 
                 for _ in message.attachments:
                     attached = await _.to_file()
