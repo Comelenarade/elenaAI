@@ -591,7 +591,7 @@ async def on_message(message):
     
         gulag_role = discord.utils.get(message.guild.roles, name= GULAG_ROLE)
 
-        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
+        gulag_guy = random.choice(ListRoleMembers(message, DEF_ROLE))
         gulag_length = random.randint(1, 48)
 
         gulag_message = f"TO CELEBRATE ANOTHER HUNDRED MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
