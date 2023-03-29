@@ -176,7 +176,7 @@ async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
         await ctx.send(f"This command can only be used by {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
-async def gulag_w_count(ctx, key: int): #randomly gulag someone when Т ьуыыфпуы
+async def gulag_w_count(key: int): #randomly gulag someone when Т ьуыыфпуы
     """Service command, for internal use"""
     if int(key) == 2349823759234:
         channel = bot.get_channel(GENERAL_CHANNEL)
@@ -540,7 +540,7 @@ async def idtheft(ctx, *sometext: str):
 @bot.event
 async def on_message(message):
     _message = message
-    
+
     global gulag_counter
     gulag_counter += 1
 
