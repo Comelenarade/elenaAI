@@ -14,6 +14,7 @@ global COMMANDMENTS
 COMMANDMENTS = ""
 
 WELCOME_CHANNEL = 786107233586905128
+GENERAL_CHANNEL = 786117455608807445
 DEF_ROLE = "comrade"
 GULAG_ROLE = 'GULAG'
 TYRANT_ROLE  = "Tyrant"
@@ -23,6 +24,7 @@ ALL_OTHER_CHANNELS = "All Other Classes"
 README_CHANNEL = "readme"
 
 MIN_PEOPLE_CHANNEL = 4
+GULAG_COUNTER_TRIGGER = 1000
 
 utc_dt = datetime.datetime.now(datetime.timezone.utc)
 
@@ -31,6 +33,8 @@ intents.members = True
 #intents.message_content = True
 
 bot = commands.Bot(command_prefix='?', description="ELENA AI", intents=intents)
+
+gulag_counter = 0
 
 @bot.event
 async def on_ready():
@@ -170,6 +174,31 @@ async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
         await gulag_guy.remove_roles(gulag_role)
     else:
         await ctx.send(f"This command can only be used by {limit_to}. suck some balls hahahahahha")
+
+@bot.command()
+async def gulag_w_count(ctx, key: int): #randomly gulag someone when Т ьуыыфпуы
+    """Service command, for internal use"""
+    if int(key) == 2349823759234:
+        channel = bot.get_channel(GENERAL_CHANNEL)
+    
+        gulag_role = discord.utils.get(ctx.guild.roles, name= GULAG_ROLE)
+
+        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
+        gulag_length = random.randint(1, 48)
+
+        gulag_message = f"TO CELEBRATE ANOTHER THOUSAND MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
+        
+        await gulag_guy.add_roles(gulag_role)
+        await channel.send(f"{gulag_message}")
+
+        gulag_follow = random.choice(COMMANDMENTS)
+        print("gulaged", gulag_guy, "for", gulag_length, gulag_message)
+
+        await asyncio.sleep(gulag_length*60*60)
+        await channel.send(f"{gulag_guy.mention} your gulag sentence ended. stick to the following {gulag_follow[0]} principle: '{gulag_follow[1]}'")
+        print("ungulaged", gulag_guy)
+
+        await gulag_guy.remove_roles(gulag_role)
 
 @bot.command()
 async def checkclasses(ctx): #service routine
@@ -512,6 +541,8 @@ async def idtheft(ctx, *sometext: str):
 async def on_message(message):
     _message = message
 
+    gulag_counter += 1
+
     #super secret
     if (message.channel.name == "super_secret"):
         if (CheckPermissionRole(message, DEF_ROLE)):
@@ -569,6 +600,12 @@ async def on_message(message):
             await message.channel.send(f"GULAGed {str(namePrint)} requests to: {message.content}")
             
         await message.delete()
+    
+    #gulag with counter
+    elif (gulag_counter > GULAG_COUNTER_TRIGGER):
+        gulag_counter = 0
+        await ctx.invoke(bot.get_command('trigrolestatupdate'), key = 2349823759234)
+
     await bot.process_commands(_message)
 
 bot.run(TOKEN)
