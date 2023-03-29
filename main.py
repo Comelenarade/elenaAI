@@ -540,7 +540,8 @@ async def idtheft(ctx, *sometext: str):
 @bot.event
 async def on_message(message):
     _message = message
-
+    
+    global gulag_counter
     gulag_counter += 1
 
     #super secret
