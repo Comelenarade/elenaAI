@@ -176,31 +176,6 @@ async def gulagsmn(ctx, *person_time_reason): #randomly gulag someone
         await ctx.send(f"This command can only be used by {limit_to}. suck some balls hahahahahha")
 
 @bot.command()
-async def gulag_w_count(key: int): #randomly gulag someone when Т ьуыыфпуы
-    """Service command, for internal use"""
-    if int(key) == 2349823759234:
-        channel = bot.get_channel(GENERAL_CHANNEL)
-    
-        gulag_role = discord.utils.get(ctx.guild.roles, name= GULAG_ROLE)
-
-        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
-        gulag_length = random.randint(1, 48)
-
-        gulag_message = f"TO CELEBRATE ANOTHER THOUSAND MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
-        
-        await gulag_guy.add_roles(gulag_role)
-        await channel.send(f"{gulag_message}")
-
-        gulag_follow = random.choice(COMMANDMENTS)
-        print("gulaged", gulag_guy, "for", gulag_length, gulag_message)
-
-        await asyncio.sleep(gulag_length*60*60)
-        await channel.send(f"{gulag_guy.mention} your gulag sentence ended. stick to the following {gulag_follow[0]} principle: '{gulag_follow[1]}'")
-        print("ungulaged", gulag_guy)
-
-        await gulag_guy.remove_roles(gulag_role)
-
-@bot.command()
 async def checkclasses(ctx): #service routine
     """Checks if any role classes with no members are there, because it can mess with Elena. Can only be used be Tyrant."""
     limit_to = TYRANT_ROLE
@@ -476,6 +451,30 @@ async def initrolestat(ctx):
     else:
         message = f"This command can only be used by {limit_to}."
         await ctx.send(message)
+
+async def gulag_w_count(key: int): #randomly gulag someone when Т ьуыыфпуы
+    """Service command, for internal use"""
+    if int(key) == 2349823759234:
+        channel = bot.get_channel(GENERAL_CHANNEL)
+    
+        gulag_role = discord.utils.get(ctx.guild.roles, name= GULAG_ROLE)
+
+        gulag_guy = random.choice(ListRoleMembers(ctx, DEF_ROLE))
+        gulag_length = random.randint(1, 48)
+
+        gulag_message = f"TO CELEBRATE ANOTHER THOUSAND MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
+        
+        await gulag_guy.add_roles(gulag_role)
+        await channel.send(f"{gulag_message}")
+
+        gulag_follow = random.choice(COMMANDMENTS)
+        print("gulaged", gulag_guy, "for", gulag_length, gulag_message)
+
+        await asyncio.sleep(gulag_length*60*60)
+        await channel.send(f"{gulag_guy.mention} your gulag sentence ended. stick to the following {gulag_follow[0]} principle: '{gulag_follow[1]}'")
+        print("ungulaged", gulag_guy)
+
+        await gulag_guy.remove_roles(gulag_role)
     
 @bot.command()
 async def trigrolestatupdate(ctx):
@@ -605,7 +604,7 @@ async def on_message(message):
     #gulag with counter
     elif (gulag_counter > GULAG_COUNTER_TRIGGER):
         gulag_counter = 0
-        await bot.invoke(bot.get_command('gulag_w_count'), key = 2349823759234)
+        await gulag_w_count(key = 2349823759234)
 
     await bot.process_commands(_message)
 
