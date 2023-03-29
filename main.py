@@ -605,7 +605,7 @@ async def on_message(message):
     #gulag with counter
     elif (gulag_counter > GULAG_COUNTER_TRIGGER):
         gulag_counter = 0
-        await ctx.invoke(bot.get_command('trigrolestatupdate'), key = 2349823759234)
+        await bot.invoke(bot.get_command('gulag_w_count'), key = 2349823759234)
 
     await bot.process_commands(_message)
 
