@@ -5,7 +5,7 @@ SWEARS = ["arse","arsehole","as useful as tits on a bull","balls","bastard","bea
             "cock cheese","cock jockey","cock-up","cocksucker","cockwomble","codger","cor blimey","corey","cow","crap","crikey","cunt",
             "daft","daft cow","damn","dick","dickhead","did he bollocks!","did i fuck as like!","dildo","dodgy","duffer","fanny","feck","flaps",
             "fuck","fuck me sideways!","fucking cunt","fucktard","gash","ginger","git","gob shite","goddam","gorblimey","gordon bennett","gormless","he’s a knob",
-            "hell","","hobknocker","I'd rather snort my own cum","jesus christ","jizz","knob","knobber","knobend","knobhead","ligger","like fucking a dying man's handshake",
+            "hell","hobknocker","I'd rather snort my own cum","jesus christ","jizz","knob","knobber","knobend","knobhead","ligger","like fucking a dying man's handshake",
             "mad as a hatter","manky","minge","minger","minging","motherfucker","munter","muppet","naff","nitwit","nonce","numpty","nutter","off their rocker","penguin","pillock",
             "pish","piss off","piss-flaps","pissed","pissed off","play the five-fingered flute","plonker","ponce","poof","pouf","poxy","prat","prick","prick","prickteaser","punani",
             "punny","pussy","randy","rapey","rat arsed","rotter","rubbish","scrubber","shag","shit","shite","shitfaced","skank","slag","slapper","slut","snatch","sod","sod-off","son of a bitch",
