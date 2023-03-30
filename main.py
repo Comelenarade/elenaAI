@@ -24,7 +24,7 @@ ALL_OTHER_CHANNELS = "All Other Classes"
 README_CHANNEL = "readme"
 
 MIN_PEOPLE_CHANNEL = 4
-GULAG_COUNTER_TRIGGER = 100
+GULAG_COUNTER_TRIGGER = 500
 
 utc_dt = datetime.datetime.now(datetime.timezone.utc)
 
@@ -594,7 +594,7 @@ async def on_message(message):
         gulag_guy = random.choice(ListRoleMembers(message, DEF_ROLE))
         gulag_length = random.randint(1, 48)
 
-        gulag_message = f"TO CELEBRATE ANOTHER HUNDRED MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
+        gulag_message = f"TO CELEBRATE ANOTHER {GULAG_COUNTER_TRIGGER} MESSAGES SENT ON THIS SERVER {gulag_guy.mention} SENT TO GULAG FOR {gulag_length} HOURS"
         
         await gulag_guy.add_roles(gulag_role)
         await channel.send(f"{gulag_message}")
