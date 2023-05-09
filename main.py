@@ -23,7 +23,7 @@ ELENA_CHANNEL = "elena"
 ALL_OTHER_CHANNELS = "All Other Classes"
 README_CHANNEL = "readme"
 
-MIN_PEOPLE_CHANNEL = 4
+MIN_PEOPLE_CHANNEL = 3
 GULAG_COUNTER_TRIGGER = 500
 
 utc_dt = datetime.datetime.now(datetime.timezone.utc)
@@ -105,7 +105,7 @@ async def classes(ctx, *classes: str): #Assign classes to person
                             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
                             role_add: discord.PermissionOverwrite(read_messages=True)
                             }
-                        categ = await ctx.guild.create_category(clas, overwrites = overwrites) #category, in which:
+                        categ = await ctx.guild.create_category(clas + "(CLASS NAME)", overwrites = overwrites) #category, in which:
                         await ctx.guild.create_text_channel("resources", category = categ) #chat for resources
                         await ctx.guild.create_text_channel("general", category = categ) #general chat
                         await ctx.guild.create_voice_channel("voice", category = categ) #voice channel
@@ -429,6 +429,15 @@ async def beginsemester(ctx, term = "spring23"):
             await _.remove_roles(discord.utils.get(ctx.guild.roles, name= DEF_ROLE))
         
         await elenaChnl.send("all set. semester started")
+
+        overwrites = {
+                    ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
+                    role_add: discord.PermissionOverwrite(read_messages=True)
+                    }
+
+        categ = await ctx.guild.create_category("All Other Classes", overwrites = overwrites) #category, in which:
+        await ctx.guild.create_text_channel("general", category = categ) #chat for resources
+
 
     else:
         message = f"This command can only be used by {limit_to}."
