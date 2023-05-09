@@ -446,22 +446,6 @@ async def beginsemester(ctx, term = "spring23"):
         await ctx.send(message)
 
 @bot.command()
-async def testtest(ctx):
-    limit_to = TYRANT_ROLE
-    flag = CheckPermissionRole(ctx, limit_to)
-    if flag:
-        role_def = discord.utils.get(ctx.guild.roles, name=DEF_ROLE)
-
-        overwrites = {
-                    ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
-                    role_def: discord.PermissionOverwrite(read_messages=True)
-                    }
-
-        categ = await ctx.guild.create_category("All Other Classes1", overwrites = overwrites) #category, in which:
-        await ctx.guild.create_text_channel("general", category = categ) #chat for resources
-
-
-@bot.command()
 async def initrolestat(ctx):
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
