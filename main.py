@@ -446,7 +446,7 @@ async def beginsemester(ctx, term = "spring23"):
         await ctx.send(message)
 
 @bot.command()
-async def initrolestat(ctx):
+async def testtest(ctx):
     limit_to = TYRANT_ROLE
     flag = CheckPermissionRole(ctx, limit_to)
     if flag:
