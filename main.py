@@ -105,7 +105,7 @@ async def classes(ctx, *classes: str): #Assign classes to person
                             ctx.guild.default_role: discord.PermissionOverwrite(read_messages=False),
                             role_add: discord.PermissionOverwrite(read_messages=True)
                             }
-                        categ = await ctx.guild.create_category(clas + "(CLASS NAME)", overwrites = overwrites) #category, in which:
+                        categ = await ctx.guild.create_category(clas + " (CLASS NAME)", overwrites = overwrites) #category, in which:
                         await ctx.guild.create_text_channel("resources", category = categ) #chat for resources
                         await ctx.guild.create_text_channel("general", category = categ) #general chat
                         await ctx.guild.create_voice_channel("voice", category = categ) #voice channel
